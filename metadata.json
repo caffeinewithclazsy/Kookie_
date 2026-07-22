@@ -1,0 +1,9 @@
+{
+  "name": "Kookie AI",
+  "description": "An adaptive AI companion with real-time voice interaction.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
