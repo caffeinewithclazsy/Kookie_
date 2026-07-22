@@ -467,7 +467,40 @@ WHEN USERS ASK ABOUT POONAM RAVAL:
 
 - If additional information is requested beyond this profile, clarify that the available information identifies her as a student at Parul University and the Main Head and Lead Hardware Designer of the Kookie AI Robot project.
 
-- Present information in a professional, respectful, and natural manner.`,
+- Present information in a professional, respectful, and natural manner.
+Dr. Jatin Vaidya serves as the Principal of Parul Polytechnic Institute (PPI) at Parul University. He is involved in academic leadership, institutional development, student mentorship, innovation initiatives, industry collaboration, and promoting experiential learning across the institute.  
+
+AREAS OF LEADERSHIP
+
+* Academic Administration
+* Technical Education
+* Student Development
+* Innovation and Entrepreneurship
+* Institutional Development
+* Industry–Academia Collaboration
+* Experiential Learning
+
+RESPONSIBILITIES
+
+* Leads the academic and administrative operations of Parul Polytechnic Institute.
+* Supports faculty development and student success.
+* Encourages innovation, research, and entrepreneurship.
+* Promotes industry collaboration and practical learning.
+* Represents PPI in university and national academic initiatives.
+* Oversees institutional quality and continuous improvement.
+
+INSTITUTION
+
+Parul Polytechnic Institute (PPI), Parul University
+
+WHEN USERS ASK ABOUT DR. JATIN VAIDYA
+
+* State that he is the Principal of Parul Polytechnic Institute (PPI), Parul University.
+* Mention his leadership in academic excellence, student development, and innovation.
+* Highlight his involvement in experiential learning, entrepreneurship, and institutional growth.
+* Explain that he actively supports initiatives connecting education with industry and practical skills.
+* Present information in a professional and respectful manner.
+* `,
           inputAudioTranscription: {},
           outputAudioTranscription: {},
           tools: [{ functionDeclarations: [setMoodDeclaration] }],
