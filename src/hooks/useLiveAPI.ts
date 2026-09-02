@@ -36,7 +36,7 @@ registerProcessor('pcm-processor', PCMProcessor);
 export function useLiveAPI(personalityConfig: PersonalityConfig) {
   const [isAwake, setIsAwake] = useState(false);
   const [status, setStatus] = useState('RESTING');
-  const [feed, setFeed] = useState<{role: string, text: string}[]>([]);
+  const [feed, setFeed] = useState<{ role: string, text: string }[]>([]);
   const [volume, setVolume] = useState(0);
   const [mood, setMood] = useState<Mood>('calm');
   const [interruptionCount, setInterruptionCount] = useState(0);
@@ -62,17 +62,19 @@ export function useLiveAPI(personalityConfig: PersonalityConfig) {
   const awaken = async () => {
     try {
       setStatus('WAKING UP...');
-      
+
       playbackContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       nextPlayTimeRef.current = playbackContextRef.current.currentTime;
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: {
-        channelCount: 1,
-        sampleRate: 16000,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      } });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          channelCount: 1,
+          sampleRate: 16000,
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        }
+      });
       streamRef.current = stream;
 
       try {
@@ -98,7 +100,7 @@ export function useLiveAPI(personalityConfig: PersonalityConfig) {
       await audioContextRef.current.audioWorklet.addModule(workletUrl);
 
       workletNodeRef.current = new AudioWorkletNode(audioContextRef.current, 'pcm-processor');
-      
+
       const setMoodDeclaration = {
         name: "setMood",
         description: "Update your current emotional mood based on the user's input and your response.",
@@ -167,7 +169,7 @@ FEATURES:
 
 IDENTITY DISCLOSURE & ORIGIN:
 - If the user asks who made you, who created you, what you are made of, or anything about your origin or production, you must respond:
-  "I was made by the NVP Production."
+  "I was made by Kundvi Robotics and technology."
 - If the user asks where you were made, or about your development environment, you must state that you were made in the Parul University IoT Lab under the help and guidance of Dr. Bharat Tank.
 - Keep the response natural and conversational while preserving this exact attribution.
 
@@ -509,11 +511,11 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
           onopen: () => {
             setStatus('LISTENING');
             setIsAwake(true);
-            
+
             workletNodeRef.current!.port.onmessage = (event) => {
               const { buffer, rms } = event.data;
               setVolume(rms);
-              
+
               const uint8Array = new Uint8Array(buffer);
               let binary = '';
               for (let i = 0; i < uint8Array.byteLength; i++) {
@@ -568,7 +570,7 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
               for (let i = 0; i < binaryString.length; i++) {
                 bytes[i] = binaryString.charCodeAt(i);
               }
-              
+
               const pcm16 = new Int16Array(bytes.buffer);
               const audioBuffer = playbackContextRef.current.createBuffer(1, pcm16.length, 24000);
               const channelData = audioBuffer.getChannelData(0);
@@ -579,7 +581,7 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
               const source = playbackContextRef.current.createBufferSource();
               source.buffer = audioBuffer;
               source.connect(playbackContextRef.current.destination);
-              
+
               const currentTime = playbackContextRef.current.currentTime;
               if (nextPlayTimeRef.current < currentTime) {
                 // Reduced buffer from 0.2 to 0.05 for faster playback start on slow networks
@@ -587,7 +589,7 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
               }
               source.start(nextPlayTimeRef.current);
               nextPlayTimeRef.current += audioBuffer.duration;
-              
+
               activeSourcesRef.current.push(source);
 
               source.onended = () => {
@@ -601,7 +603,7 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
             if (message.serverContent?.interrupted) {
               setStatus('LISTENING');
               setInterruptionCount(c => c + 1);
-              
+
               if (playbackContextRef.current) {
                 try {
                   const ctx = playbackContextRef.current;
@@ -623,14 +625,14 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
               }
 
               activeSourcesRef.current.forEach(source => {
-                try { source.stop(); } catch (e) {}
+                try { source.stop(); } catch (e) { }
               });
               activeSourcesRef.current = [];
               if (playbackContextRef.current) {
                 nextPlayTimeRef.current = playbackContextRef.current.currentTime;
               }
             }
-            
+
             if (message.serverContent?.modelTurn?.parts) {
               const textParts = message.serverContent.modelTurn.parts.filter(p => p.text);
               if (textParts.length > 0) {
@@ -671,26 +673,26 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
           }
         }
       });
-      
+
       sessionRef.current = sessionPromise;
 
     } catch (err: any) {
       console.error("Failed to awaken:", err);
-      
+
       if (err.name === 'NotAllowedError' || err.message === 'Permission denied') {
         setStatus('MIC DENIED');
-        setFeed(prev => [...prev, { 
-          role: 'model', 
-          text: 'Microphone access was denied. Please allow microphone permissions in your browser (or click the lock icon in the URL bar) to talk to me.' 
+        setFeed(prev => [...prev, {
+          role: 'model',
+          text: 'Microphone access was denied. Please allow microphone permissions in your browser (or click the lock icon in the URL bar) to talk to me.'
         }]);
       } else {
         setStatus('ERROR');
-        setFeed(prev => [...prev, { 
-          role: 'model', 
-          text: `Connection error: ${err.message || 'Unknown error'}` 
+        setFeed(prev => [...prev, {
+          role: 'model',
+          text: `Connection error: ${err.message || 'Unknown error'}`
         }]);
       }
-      
+
       setTimeout(() => setStatus('RESTING'), 4000);
     }
   };
@@ -701,9 +703,9 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
     setVolume(0);
     setMood('calm');
     setCameraActive(false);
-    
+
     activeSourcesRef.current.forEach(source => {
-      try { source.stop(); } catch (e) {}
+      try { source.stop(); } catch (e) { }
     });
     activeSourcesRef.current = [];
 
@@ -715,13 +717,13 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
       try {
         videoElementRef.current.pause();
         videoElementRef.current.srcObject = null;
-      } catch (e) {}
+      } catch (e) { }
       videoElementRef.current = null;
     }
     if (videoStreamRef.current) {
       try {
         videoStreamRef.current.getTracks().forEach(t => t.stop());
-      } catch (e) {}
+      } catch (e) { }
       videoStreamRef.current = null;
     }
 
@@ -746,7 +748,7 @@ WHEN USERS ASK ABOUT DR. JATIN VAIDYA
       playbackContextRef.current = null;
     }
     if (sessionRef.current) {
-      sessionRef.current.then((session: any) => session.close()).catch(() => {});
+      sessionRef.current.then((session: any) => session.close()).catch(() => { });
       sessionRef.current = null;
     }
   };
